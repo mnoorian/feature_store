@@ -1,0 +1,2 @@
+# This file ensures the raw/ directory is tracked in Git
+# Actual CSV files are ignored by .gitignore 
