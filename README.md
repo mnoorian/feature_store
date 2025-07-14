@@ -1,160 +1,208 @@
-# Transaction Data Feature Engineering Project
+# Feast + DataHub Integration
 
-A modular Python project for generating synthetic transaction data and creating 12-month rolling features for customer analysis.
+A proof-of-concept project demonstrating the integration between [Feast](https://feast.dev/) (Feature Store) and [DataHub](https://datahubproject.io/) (Metadata Platform) using Docker Compose.
+
+## 🎯 Overview
+
+This project sets up a complete environment where you can:
+- **Register features** in Feast (offline feature store)
+- **Discover features** through the DataHub UI
+- **Manage metadata** for your ML features
+
+## 🏗️ Architecture
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Feast         │    │   DataHub       │    │   Infrastructure│
+│   (Jupyter)     │    │   (UI + GMS)    │    │   (Docker)      │
+│                 │    │                 │    │                 │
+│ • Feature       │    │ • Feature       │    │ • MySQL         │
+│   Registration  │    │   Discovery     │    │ • Elasticsearch │
+│ • Offline Store │    │ • Metadata      │    │ • Kafka         │
+│ • Jupyter       │    │   Management    │    │ • Zookeeper     │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+```
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Docker and Docker Compose
+- Git
+
+### 1. Clone the Repository
+
+```bash
+git clone <your-repo-url>
+cd fs_poc_2
+```
+
+### 2. Start Services
+
+```bash
+docker compose up -d
+```
+
+### 3. Access the Services
+
+- **DataHub UI:** http://localhost:9002
+- **Jupyter Notebook:** http://localhost:8888
+- **DataHub API:** http://localhost:8080
 
 ## 📁 Project Structure
 
 ```
 fs_poc_2/
-├── src/                          # Core Python modules
+├── docker-compose.yml      # Main service orchestration
+├── requirements.txt        # Python dependencies
+├── README.md              # This file
+├── .gitignore             # Git ignore rules
+├── src/                   # Source code
 │   ├── __init__.py
-│   ├── data_generation.py        # Synthetic data generation
-│   ├── feature_engineering.py    # 12-month rolling features
-│   └── utils.py                  # Utilities (loading, analysis, viz)
-├── scripts/                      # CLI scripts
-│   ├── generate_data.py          # Generate synthetic data
-│   └── generate_features.py      # Generate features
-├── notebooks/                    # Jupyter notebooks for exploration
-├── data/                         # Data files
-│   ├── raw/                      # Raw data files
-│   └── transformed/              # Processed/transformed data
-├── output/                       # Generated outputs
-├── requirements.txt
-└── README.md
+│   ├── data_generation.py
+│   ├── feature_engineering.py
+│   └── utils.py
+├── notebooks/             # Jupyter notebooks
+├── data/                  # Data files
+│   ├── raw/
+│   └── transformed/
+├── scripts/               # Utility scripts
+│   ├── generate_data.py
+│   └── generate_features.py
+└── output/                # Generated outputs
 ```
 
-## 🚀 Quick Start
+## 🔧 Services
 
-### 1. Setup Environment
+### Core Services
 
-```bash
-# Create and activate virtual environment
-python3.10 -m venv venv_py310
-source venv_py310/bin/activate
+| Service | Port | Description |
+|---------|------|-------------|
+| DataHub Frontend | 9002 | Web UI for metadata discovery |
+| DataHub GMS | 8080 | Backend API service |
+| Jupyter Notebook | 8888 | Feast feature development |
+| MySQL | 3307 | DataHub metadata storage |
+| Elasticsearch | 9201 | Search and indexing |
+| Kafka | 9093 | Event streaming |
+| Schema Registry | 8081 | Schema management |
+| Zookeeper | 2182 | Kafka coordination |
 
-# Install dependencies
-pip install -r requirements.txt
-```
+### Configuration
 
-### 2. Generate Synthetic Data
+- **Authentication:** Disabled (no login required)
+- **Data Persistence:** Docker volumes for MySQL, Elasticsearch, and Kafka
+- **Network:** Custom Docker network for service communication
 
-```bash
-# Generate 100 customers and 1000 transactions
-python scripts/generate_data.py
-```
+## 📊 Usage
 
-This creates:
-- `data/raw/customers.csv` - Customer information
-- `data/raw/transactions.csv` - Transaction data
+### 1. Register Features in Feast
 
-### 3. Generate 12-Month Rolling Features
-
-```bash
-# Generate features and analysis
-python scripts/generate_features.py
-```
-
-This creates:
-- `data/transformed/customer_features_12months.csv` - All features for each customer
-- `data/transformed/customer_segments_analysis.csv` - Segmentation analysis
-
-## 📊 Features Generated
-
-### Transaction Count Features
-- `total_transactions_12m` - Total transactions in last 12 months
-- `avg_transactions_per_month` - Average transactions per month
-
-### Amount Features
-- `total_amount_12m` - Total amount spent in last 12 months
-- `avg_amount_12m` - Average transaction amount
-- `max_amount_12m` / `min_amount_12m` - Min/max transaction amounts
-- `std_amount_12m` - Standard deviation of amounts
-
-### Transaction Type Features
-- `purchase_count_12m` / `purchase_amount_12m`
-- `withdrawal_count_12m` / `withdrawal_amount_12m`
-- `transfer_count_12m` / `transfer_amount_12m`
-- `deposit_count_12m` / `deposit_amount_12m`
-
-### Behavioral Features
-- `high_value_transactions_12m` - Count of high-value transactions
-- `low_value_transactions_12m` - Count of low-value transactions
-- `days_since_first_transaction` - Customer tenure
-
-## 🏷️ Customer Segmentation
-
-Customers are automatically segmented into:
-- **High-Value Active**: >$10K total amount AND >20 transactions
-- **Active**: >$5K total amount OR >10 transactions
-- **High-Value Occasional**: Average amount >$500
-- **Regular**: >5 transactions
-- **Occasional**: Low activity customers
-- **Inactive**: No transactions in 12 months
-
-## 🔧 Using the Modules
-
-### Generate Data Programmatically
+1. Open Jupyter: http://localhost:8888
+2. Create a new notebook
+3. Install Feast and register your features:
 
 ```python
-from src.data_generation import generate_synthetic_data
+import feast
+from feast import FeatureStore
 
-# Generate custom dataset
-customers_df, transactions_df = generate_synthetic_data(
-    num_customers=200,
-    num_transactions=2000,
-    output_dir='data/raw'
-)
+# Initialize feature store
+store = FeatureStore(repo_path=".")
+
+# Define and register features
+# ... your feature definitions
 ```
 
-### Generate Features Programmatically
+### 2. Discover Features in DataHub
 
-```python
-from src.feature_engineering import generate_12month_features, segment_customers
-from src.utils import load_data, analyze_features
+1. Open DataHub UI: http://localhost:9002
+2. Search for your registered features
+3. Browse metadata and lineage
 
-# Load data
-customers_df, transactions_df = load_data()
+### 3. Ingest Feast Metadata to DataHub
 
-# Generate features
-features_df = generate_12month_features(transactions_df)
+```bash
+# Install DataHub CLI
+pip install 'acryl-datahub[datahub-rest]'
 
-# Add segmentation
-features_df['customer_segment'] = segment_customers(features_df)
-
-# Analyze
-segment_analysis = analyze_features(features_df)
+# Ingest Feast metadata
+datahub ingest -c feast-ingestion.yml
 ```
-
-## 📈 Analysis & Visualization
-
-The feature generation script automatically:
-- Calculates descriptive statistics
-- Creates customer segments
-- Generates visualizations (histograms, scatter plots, pie charts)
-- Exports results to CSV
 
 ## 🛠️ Development
 
 ### Adding New Features
 
-1. Add feature calculation logic to `src/feature_engineering.py`
-2. Update the `generate_12month_features()` function
-3. Test with `python scripts/generate_features.py`
+1. **Define features** in Jupyter notebooks
+2. **Register** them in Feast
+3. **Ingest metadata** into DataHub
+4. **Discover** through DataHub UI
 
-### Adding New Analysis
+### Customizing the Setup
 
-1. Add analysis functions to `src/utils.py`
-2. Import and use in `scripts/generate_features.py`
-3. Update visualizations as needed
+- Modify `docker-compose.yml` for different configurations
+- Update `requirements.txt` for additional dependencies
+- Add custom notebooks in the `notebooks/` directory
 
-## 📋 Requirements
+## 🔍 Troubleshooting
 
-- Python 3.10+
-- pandas
-- numpy
-- matplotlib
-- seaborn
+### Common Issues
 
-## 📝 License
+1. **Port Conflicts**
+   ```bash
+   # Check what's using a port
+   lsof -i :<port>
+   
+   # Stop conflicting containers
+   docker stop <container-name>
+   ```
 
-This project is for educational and demonstration purposes. 
+2. **Service Health Issues**
+   ```bash
+   # Check service status
+   docker compose ps
+   
+   # View logs
+   docker compose logs <service-name>
+   ```
+
+3. **Volume Issues**
+   ```bash
+   # Clean up volumes
+   docker compose down
+   docker volume rm <volume-name>
+   docker compose up -d
+   ```
+
+### Service Logs
+
+```bash
+# View all logs
+docker compose logs
+
+# View specific service logs
+docker compose logs datahub-gms
+docker compose logs feast-jupyter
+```
+
+## 📝 Notes
+
+- **Offline Features Only:** This setup focuses on offline feature stores (no Redis)
+- **Development Environment:** Not recommended for production use
+- **Data Persistence:** Data is stored in Docker volumes
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+
+## 📄 License
+
+[Add your license here]
+
+## 🙏 Acknowledgments
+
+- [Feast](https://feast.dev/) - Feature Store
+- [DataHub](https://datahubproject.io/) - Metadata Platform
+- [Docker](https://www.docker.com/) - Containerization 

@@ -16,3 +16,13 @@ psycopg2-binary>=2.9.0
 # - uuid
 # - datetime
 # - os 
+
+feast>=0.36.0
+pandas>=1.5.0
+numpy>=1.21.0
+sqlalchemy>=1.4.0
+pydantic>=1.10.0
+# Offline store dependencies
+pyarrow>=10.0.0
+# DataHub integration
+acryl-datahub[datahub-rest]>=0.10.0 
