@@ -89,7 +89,7 @@ def export_metadata(repo_path: str = ".", output_file: str = "data/feature_metad
                 "name": entity.name,
                 "description": entity.description,
                 "value_type": str(entity.value_type),
-                "join_keys": entity.join_keys
+                "join_key": entity.join_key
             })
         
         # Export feature view metadata
@@ -97,7 +97,7 @@ def export_metadata(repo_path: str = ".", output_file: str = "data/feature_metad
             feature_metadata["feature_views"].append({
                 "name": feature_view.name,
                 "description": feature_view.description,
-                "entities": [entity.name for entity in feature_view.entities],
+                "entities": feature_view.entities,  # Already a list of strings
                 "features": [field.name for field in feature_view.schema],
                 "ttl": str(feature_view.ttl),
                 "source": feature_view.source.name,

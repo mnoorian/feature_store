@@ -12,10 +12,32 @@ A comprehensive feature store implementation using **Feast** for feature managem
          │                       │                       │
          ▼                       ▼                       ▼
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Local CSV     │    │   CSV Export    │    │   DataHub       │
-│   Files         │    │   (Transformed) │    │   Metadata      │
+│   Local CSV     │    │   CSV Export    │    │   Metadata      │
+│   Files         │    │   (Transformed) │    │   Export        │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+                                                              │
+                                                              ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   DataHub       │◀───│   Metadata      │◀───│   Feature       │
+│   UI/API        │    │   Ingestion     │    │   Discovery     │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
+
+### 🔄 Metadata Flow
+
+1. **Feature Registration**: Features are registered in Feast with metadata
+2. **Metadata Export**: Feast metadata is exported to DataHub-compatible format
+3. **DataHub Ingestion**: Metadata is ingested into DataHub via API/UI
+4. **Feature Discovery**: Users can discover and explore features in DataHub UI
+
+### 📊 Infrastructure Components
+
+- **Feast**: Feature store for feature management and serving
+- **DataHub**: Metadata catalog for feature discovery and lineage
+- **Kafka**: Message streaming (for real-time features)
+- **MySQL**: Metadata storage for DataHub
+- **Elasticsearch**: Search and indexing for DataHub
+- **Jupyter**: Development and experimentation environment
 
 ## 📁 Project Structure
 
@@ -40,7 +62,9 @@ fs_poc_2/
 │   │   └── data_exporter.py       # Data export utilities
 │   └── pipeline.py                # Main orchestration pipeline
 ├── scripts/                       # Utility scripts
-│   └── run_pipeline.py            # Pipeline runner script
+│   ├── run_pipeline.py            # Pipeline runner script
+│   ├── upload_features_direct.py  # Direct DataHub API upload
+│   └── ingest_to_datahub.py       # DataHub metadata ingestion
 ├── notebooks/                     # Jupyter notebooks
 │   └── feature_store_demo.ipynb   # Comprehensive demo notebook
 ├── docker-compose.yml             # Docker services configuration
@@ -194,7 +218,54 @@ def run_complete_pipeline():
     export_metadata()
 ```
 
+### Metadata Export and Ingestion
+
+The feature store includes automatic metadata export from Feast to DataHub:
+
+#### Registry Module (`src/feature_store/registry.py`)
+```python
+def export_feast_metadata():
+    """Export Feast metadata to DataHub-compatible format"""
+    # Extract feature views, entities, and services
+    # Convert to DataHub entity format
+    # Generate metadata files for ingestion
+```
+
+#### DataHub Integration Scripts
+
+**Direct API Upload** (`scripts/upload_features_direct.py`):
+- Uploads feature metadata directly to DataHub API
+- Handles authentication and error handling
+- Provides status feedback
+
+**CLI Ingestion** (`scripts/ingest_to_datahub.py`):
+- Uses DataHub CLI for metadata ingestion
+- Supports batch processing
+- Configurable ingestion options
+
+#### Metadata Files Generated
+
+- `data/datahub_metadata.json`: Main metadata file for DataHub ingestion
+- `data/simple_datahub_metadata.json`: Simplified format for UI upload
+- `data/datahub_ingestion_config.yaml`: CLI configuration file
+
 ## 🎯 Usage Examples
+
+### Complete Feature Store Workflow
+
+```bash
+# 1. Start infrastructure
+docker-compose up -d
+
+# 2. Run complete pipeline (generates data, registers features, exports metadata)
+python scripts/run_pipeline.py
+
+# 3. Upload metadata to DataHub
+python scripts/upload_features_direct.py
+
+# 4. Access DataHub UI to explore features
+# Open http://localhost:9002 and search for "feast"
+```
 
 ### Run Complete Pipeline
 
@@ -220,6 +291,26 @@ python scripts/run_pipeline.py --generate-only
 ```bash
 python scripts/run_pipeline.py --register-only
 ```
+
+### Export and Ingest Metadata
+
+```bash
+# Export metadata from Feast
+python scripts/run_pipeline.py --export-metadata-only
+
+# Upload to DataHub via API
+python scripts/upload_features_direct.py
+
+# Or use DataHub CLI (if installed)
+datahub ingest -c data/datahub_ingestion_config.yaml
+```
+
+### Manual DataHub Upload
+
+1. **Export metadata**: Run the pipeline to generate metadata files
+2. **Access DataHub UI**: Go to http://localhost:9002
+3. **Upload metadata**: Use the ingestion interface to upload `data/datahub_metadata.json`
+4. **Search features**: Look for your features in the DataHub catalog
 
 ### Use S3 Sources
 

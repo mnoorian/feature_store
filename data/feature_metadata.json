@@ -1,0 +1,110 @@
+{
+  "export_timestamp": "2025-07-14T18:07:29.567019",
+  "feature_store": "feast_offline_store",
+  "data_sources": "Local CSV files in data/transformed/",
+  "entities": [
+    {
+      "name": "user_id",
+      "description": "Unique identifier for users. Used as primary key for user-related features.",
+      "value_type": "ValueType.INT64",
+      "join_key": "user_id"
+    },
+    {
+      "name": "product_id",
+      "description": "Unique identifier for products. Used as primary key for product-related features.",
+      "value_type": "ValueType.INT64",
+      "join_key": "product_id"
+    }
+  ],
+  "feature_views": [
+    {
+      "name": "user_demographic_features",
+      "description": "\n        User demographic features from local CSV data.\n        \n        **Code Logic:** https://github.com/your-username/fs_poc_2/blob/main/src/feature_generation/feature_engineering.py#L13\n        **Data Source:** Local CSV file: data/transformed/user_demographic_features.csv\n        **Update Frequency:** Daily\n        **Business Use Cases:** User segmentation, personalized recommendations, marketing campaigns\n        **Feature Generation Script:** https://github.com/your-username/fs_poc_2/blob/main/src/feature_generation/data_loader.py#L13\n        ",
+      "entities": [
+        "user_id"
+      ],
+      "features": [
+        "is_premium",
+        "user_id",
+        "registration_date",
+        "location",
+        "gender",
+        "age"
+      ],
+      "ttl": "365 days, 0:00:00",
+      "source": "user_demographic_source",
+      "source_path": "data/transformed/user_demographic_features.csv"
+    },
+    {
+      "name": "user_behavior_features",
+      "description": "\n        User behavior features derived from session data and user interactions.\n        \n        **Code Logic:** https://github.com/your-username/fs_poc_2/blob/main/src/feature_generation/feature_engineering.py#L67\n        **Data Source:** Local CSV file: data/transformed/user_behavior_features.csv\n        **Update Frequency:** Hourly\n        **Business Use Cases:** Churn prediction, engagement optimization, user experience improvements\n        **Feature Generation Script:** https://github.com/your-username/fs_poc_2/blob/main/src/feature_generation/data_loader.py#L67\n        ",
+      "entities": [
+        "user_id"
+      ],
+      "features": [
+        "user_id",
+        "total_sessions",
+        "favorite_category",
+        "engagement_score",
+        "avg_session_duration",
+        "last_login_days"
+      ],
+      "ttl": "90 days, 0:00:00",
+      "source": "user_behavior_source",
+      "source_path": "data/transformed/user_behavior_features.csv"
+    },
+    {
+      "name": "transaction_features",
+      "description": "\n        Transaction features derived from purchase history and payment data.\n        \n        **Code Logic:** https://github.com/your-username/fs_poc_2/blob/main/src/feature_generation/feature_engineering.py#L121\n        **Data Source:** Local CSV file: data/transformed/transaction_features.csv\n        **Update Frequency:** Real-time\n        **Business Use Cases:** Customer lifetime value, purchase prediction, fraud detection\n        **Feature Generation Script:** https://github.com/your-username/fs_poc_2/blob/main/src/feature_generation/data_loader.py#L121\n        ",
+      "entities": [
+        "user_id"
+      ],
+      "features": [
+        "user_id",
+        "favorite_payment_method",
+        "total_spent",
+        "last_purchase_days",
+        "total_orders",
+        "avg_order_value"
+      ],
+      "ttl": "365 days, 0:00:00",
+      "source": "transaction_source",
+      "source_path": "data/transformed/transaction_features.csv"
+    },
+    {
+      "name": "product_features",
+      "description": "\n        Product features including category, price, ratings, and inventory information.\n        \n        **Code Logic:** https://github.com/your-username/fs_poc_2/blob/main/src/feature_generation/feature_engineering.py#L175\n        **Data Source:** Local CSV file: data/transformed/product_features.csv\n        **Update Frequency:** Daily\n        **Business Use Cases:** Product recommendations, inventory optimization, pricing strategies\n        **Feature Generation Script:** https://github.com/your-username/fs_poc_2/blob/main/src/feature_generation/data_loader.py#L175\n        ",
+      "entities": [
+        "product_id"
+      ],
+      "features": [
+        "inventory_level",
+        "price",
+        "category",
+        "avg_rating",
+        "product_id",
+        "total_reviews"
+      ],
+      "ttl": "180 days, 0:00:00",
+      "source": "product_source",
+      "source_path": "data/transformed/product_features.csv"
+    }
+  ],
+  "feature_services": [
+    {
+      "name": "user_feature_service",
+      "description": "\n        Comprehensive user feature service combining demographic, behavior, and transaction features.\n        \n        **Use Cases:** User profiling, personalized recommendations, customer segmentation\n        **Model Applications:** Churn prediction, CLV modeling, recommendation systems\n        **Documentation:** https://github.com/your-org/feature-pipeline/wiki/user-features\n        **Feature Count:** 3 feature views with 15 total features\n        ",
+      "feature_views": []
+    },
+    {
+      "name": "product_feature_service",
+      "description": "\n        Product feature service for product-related ML models.\n        \n        **Use Cases:** Product recommendations, inventory optimization, pricing strategies\n        **Model Applications:** Product ranking, demand forecasting, price optimization\n        **Documentation:** https://github.com/your-org/feature-pipeline/wiki/product-features\n        **Feature Count:** 1 feature view with 5 total features\n        ",
+      "feature_views": []
+    },
+    {
+      "name": "behavior_feature_service",
+      "description": "\n        User behavior and transaction feature service for engagement and purchase prediction.\n        \n        **Use Cases:** Engagement prediction, purchase behavior analysis, churn prevention\n        **Model Applications:** Engagement scoring, purchase prediction, churn modeling\n        **Documentation:** https://github.com/your-org/feature-pipeline/wiki/behavior-features\n        **Feature Count:** 2 feature views with 10 total features\n        ",
+      "feature_views": []
+    }
+  ]
+}

@@ -33,11 +33,11 @@ def get_user_demographic_features() -> FeatureView:
         description="""
         User demographic features from local CSV data.
         
-        **Code Logic:** https://github.com/your-org/feature-pipeline/blob/main/src/features/user_demographics.py
+        **Code Logic:** https://github.com/your-username/fs_poc_2/blob/main/src/feature_generation/feature_engineering.py#L13
         **Data Source:** Local CSV file: data/transformed/user_demographic_features.csv
         **Update Frequency:** Daily
         **Business Use Cases:** User segmentation, personalized recommendations, marketing campaigns
-        **Feature Generation Script:** https://github.com/your-org/feature-pipeline/blob/main/scripts/generate_user_demographics.py
+        **Feature Generation Script:** https://github.com/your-username/fs_poc_2/blob/main/src/feature_generation/data_loader.py#L13
         """
     )
 
@@ -59,11 +59,11 @@ def get_user_behavior_features() -> FeatureView:
         description="""
         User behavior features derived from session data and user interactions.
         
-        **Code Logic:** https://github.com/your-org/feature-pipeline/blob/main/src/features/user_behavior.py
+        **Code Logic:** https://github.com/your-username/fs_poc_2/blob/main/src/feature_generation/feature_engineering.py#L67
         **Data Source:** Local CSV file: data/transformed/user_behavior_features.csv
         **Update Frequency:** Hourly
         **Business Use Cases:** Churn prediction, engagement optimization, user experience improvements
-        **Feature Generation Script:** https://github.com/your-org/feature-pipeline/blob/main/scripts/generate_user_behavior.py
+        **Feature Generation Script:** https://github.com/your-username/fs_poc_2/blob/main/src/feature_generation/data_loader.py#L67
         """
     )
 
@@ -85,11 +85,11 @@ def get_transaction_features() -> FeatureView:
         description="""
         Transaction features derived from purchase history and payment data.
         
-        **Code Logic:** https://github.com/your-org/feature-pipeline/blob/main/src/features/transaction_features.py
+        **Code Logic:** https://github.com/your-username/fs_poc_2/blob/main/src/feature_generation/feature_engineering.py#L121
         **Data Source:** Local CSV file: data/transformed/transaction_features.csv
         **Update Frequency:** Real-time
         **Business Use Cases:** Customer lifetime value, purchase prediction, fraud detection
-        **Feature Generation Script:** https://github.com/your-org/feature-pipeline/blob/main/scripts/generate_transaction_features.py
+        **Feature Generation Script:** https://github.com/your-username/fs_poc_2/blob/main/src/feature_generation/data_loader.py#L121
         """
     )
 
@@ -111,11 +111,11 @@ def get_product_features() -> FeatureView:
         description="""
         Product features including category, price, ratings, and inventory information.
         
-        **Code Logic:** https://github.com/your-org/feature-pipeline/blob/main/src/features/product_features.py
+        **Code Logic:** https://github.com/your-username/fs_poc_2/blob/main/src/feature_generation/feature_engineering.py#L175
         **Data Source:** Local CSV file: data/transformed/product_features.csv
         **Update Frequency:** Daily
         **Business Use Cases:** Product recommendations, inventory optimization, pricing strategies
-        **Feature Generation Script:** https://github.com/your-org/feature-pipeline/blob/main/scripts/generate_product_features.py
+        **Feature Generation Script:** https://github.com/your-username/fs_poc_2/blob/main/src/feature_generation/data_loader.py#L175
         """
     )
 

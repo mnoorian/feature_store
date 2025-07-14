@@ -38,6 +38,9 @@ Examples:
     # Register features only
     python scripts/run_pipeline.py --register-only
     
+    # Export metadata only
+    python scripts/run_pipeline.py --export-metadata-only
+    
     # Use S3 sources
     python scripts/run_pipeline.py --use-s3
     
@@ -73,6 +76,11 @@ Examples:
         "--register-only",
         action="store_true",
         help="Only register features, don't generate"
+    )
+    parser.add_argument(
+        "--export-metadata-only",
+        action="store_true",
+        help="Only export metadata from existing Feast registry"
     )
     
     # Optional steps
@@ -112,8 +120,8 @@ Examples:
     args = parser.parse_args()
     
     # Validate arguments
-    if args.generate_only and args.register_only:
-        print("❌ Error: Cannot specify both --generate-only and --register-only")
+    if sum([args.generate_only, args.register_only, args.export_metadata_only]) > 1:
+        print("❌ Error: Cannot specify multiple 'only' options")
         return 1
     
     if not os.path.exists(args.data_dir):
@@ -160,6 +168,12 @@ Examples:
                 use_s3=args.use_s3,
                 export_metadata=not args.skip_metadata
             )
+            
+        elif args.export_metadata_only:
+            # Only export metadata
+            print("📤 Running metadata export only...")
+            from feature_store.registry import export_feast_metadata
+            success = export_feast_metadata()
             
         else:
             # Run complete pipeline
