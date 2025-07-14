@@ -1,2 +1,0 @@
-# This file ensures the transformed/ directory is tracked in Git
-# Actual CSV files are ignored by .gitignore 

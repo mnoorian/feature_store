@@ -1,0 +1,27 @@
+project: fs_poc_2
+provider: local
+online_store:
+  type: sqlite
+  path: data/online_store.db
+offline_store:
+  type: file
+registry:
+  type: sqlite
+  path: data/registry.db
+flags:
+  enable_python_type_annotations: true
+  enable_feature_view_metadata: true
+
+# Feature store metadata for DataHub integration
+metadata:
+  description: "Feast feature store for offline feature management with DataHub integration"
+  repository: "https://github.com/your-org/feast-datahub-integration"
+  documentation: "https://github.com/your-org/feast-datahub-integration/wiki"
+  maintainers:
+    - name: "Your Team"
+      email: "team@yourcompany.com"
+  tags:
+    - "feature-store"
+    - "offline"
+    - "datahub"
+    - "ml-features" 
