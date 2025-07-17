@@ -78,3 +78,7 @@ logs/
 # Cache directories
 .cache/
 .local/
+
+# Cache directories
+.cache/
+.local/
