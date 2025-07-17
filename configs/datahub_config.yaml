@@ -1,0 +1,29 @@
+# DataHub ingestion configuration for Feast feature store
+# Usage: datahub ingest -c datahub_config.yaml
+
+source:
+  type: feast
+  config:
+    project_name: fs_poc_2
+    path: ./
+    registry_type: sqlite
+    registry_path: ./data/registry.db
+    provider: local
+
+sink:
+  type: datahub-rest
+  config:
+    server: http://localhost:8080  # DataHub API endpoint
+    timeout_sec: 30
+
+# Optional: Add transformers for custom metadata processing
+# transformers:
+#   - type: "fully-qualified-class-name-of-transformer"
+#     config:
+#       some_property: "some_value"
+
+# Optional: Add validators
+# validators:
+#   - type: "fully-qualified-class-name-of-validator"
+#     config:
+#       some_property: "some_value" 

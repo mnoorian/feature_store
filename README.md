@@ -64,12 +64,18 @@ fs_poc_2/
 ├── scripts/                       # Utility scripts
 │   ├── run_pipeline.py            # Pipeline runner script
 │   ├── upload_features_direct.py  # Direct DataHub API upload
-│   └── ingest_to_datahub.py       # DataHub metadata ingestion
+│   ├── ingest_to_datahub.py       # DataHub metadata ingestion
+│   ├── datahub_config.yaml        # DataHub pipeline configuration
+│   └── run_datahub_ingestion.py   # DataHub ingestion runner
 ├── notebooks/                     # Jupyter notebooks
 │   └── feature_store_demo.ipynb   # Comprehensive demo notebook
 ├── docker-compose.yml             # Docker services configuration
-├── feature_store.yaml             # Feast configuration
+├── configs/
+│   ├── feature_store.yaml         # Feast configuration
+│   └── datahub_config.yaml        # DataHub configuration
 ├── requirements.txt               # Python dependencies
+├── docs/                          # Documentation
+│   └── datahub_integration.md     # DataHub integration guide
 └── README.md                      # This file
 ```
 
@@ -107,6 +113,7 @@ docker-compose up -d
 ### 4. Access Services
 
 - **DataHub UI**: http://localhost:9002 (no login required)
+- **DataHub API**: http://localhost:8080 (backend API)
 - **Jupyter Notebook**: http://localhost:8888 (no token required)
 
 ### 5. Run the Pipeline
@@ -119,6 +126,20 @@ python scripts/run_pipeline.py
 python scripts/run_pipeline.py --generate-only
 python scripts/run_pipeline.py --register-only
 ```
+
+### 6. DataHub Integration (Optional)
+
+```bash
+# Method 1: Using Python script (Recommended)
+conda activate feast-env
+python scripts/run_datahub_ingestion.py
+
+# Method 2: Using DataHub CLI directly
+conda activate feast-env
+datahub ingest -c configs/datahub_config.yaml
+```
+
+For detailed DataHub integration instructions, see [docs/datahub_integration.md](docs/datahub_integration.md).
 
 ## 📊 Features Included
 
@@ -411,7 +432,7 @@ training_df = store.get_historical_features(
 
 ## 🔧 Configuration
 
-### Feast Configuration (`feature_store.yaml`)
+### Feast Configuration (`configs/feature_store.yaml`)
 
 ```yaml
 project: feast_offline_store

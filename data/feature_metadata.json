@@ -1,19 +1,78 @@
 {
-  "export_timestamp": "2025-07-14T18:07:29.567019",
-  "feature_store": "feast_offline_store",
-  "data_sources": "Local CSV files in data/transformed/",
+  "project": "fs_poc_2",
+  "provider": "local",
+  "online_store": {
+    "type": "sqlite",
+    "path": "data/online_store.db"
+  },
+  "offline_store": {
+    "type": "file"
+  },
+  "registry": {
+    "type": "sqlite",
+    "path": "data/registry.db"
+  },
+  "export_timestamp": "2025-07-16T21:34:19.604966",
+  "export_version": "100",
+  "export_format": "feast_standard",
   "entities": [
     {
       "name": "user_id",
       "description": "Unique identifier for users. Used as primary key for user-related features.",
       "value_type": "ValueType.INT64",
-      "join_key": "user_id"
+      "join_key": "user_id",
+      "tags": {},
+      "owner": "",
+      "created_timestamp": "2025-07-14T21:43:46.750206",
+      "last_updated_timestamp": "2025-07-14T23:01:34.732476"
     },
     {
       "name": "product_id",
       "description": "Unique identifier for products. Used as primary key for product-related features.",
       "value_type": "ValueType.INT64",
-      "join_key": "product_id"
+      "join_key": "product_id",
+      "tags": {},
+      "owner": "",
+      "created_timestamp": "2025-07-14T21:43:46.750287",
+      "last_updated_timestamp": "2025-07-14T23:01:34.732547"
+    }
+  ],
+  "data_sources": [
+    {
+      "name": "user_demographic_source",
+      "type": "FileSource",
+      "path": "data/transformed/user_demographic_features.csv",
+      "timestamp_field": "event_timestamp",
+      "description": "User demographic features from local CSV data. Contains age, gender, location, and subscription status.",
+      "tags": {},
+      "owner": ""
+    },
+    {
+      "name": "user_behavior_source",
+      "type": "FileSource",
+      "path": "data/transformed/user_behavior_features.csv",
+      "timestamp_field": "event_timestamp",
+      "description": "User behavior features from local CSV data. Contains session metrics and engagement scores.",
+      "tags": {},
+      "owner": ""
+    },
+    {
+      "name": "transaction_source",
+      "type": "FileSource",
+      "path": "data/transformed/transaction_features.csv",
+      "timestamp_field": "event_timestamp",
+      "description": "Transaction features from local CSV data. Contains purchase history and payment information.",
+      "tags": {},
+      "owner": ""
+    },
+    {
+      "name": "product_source",
+      "type": "FileSource",
+      "path": "data/transformed/product_features.csv",
+      "timestamp_field": "event_timestamp",
+      "description": "Product features from local CSV data. Contains product metadata and performance metrics.",
+      "tags": {},
+      "owner": ""
     }
   ],
   "feature_views": [
@@ -23,17 +82,69 @@
       "entities": [
         "user_id"
       ],
-      "features": [
-        "is_premium",
-        "user_id",
-        "registration_date",
-        "location",
-        "gender",
-        "age"
+      "schema": [
+        {
+          "name": "is_premium",
+          "dtype": "Bool",
+          "description": "Whether user has premium subscription",
+          "tags": {}
+        },
+        {
+          "name": "gender",
+          "dtype": "String",
+          "description": "User gender (M/F/Other)",
+          "tags": {}
+        },
+        {
+          "name": "location",
+          "dtype": "String",
+          "description": "User location/city",
+          "tags": {}
+        },
+        {
+          "name": "user_id",
+          "dtype": "Int64",
+          "description": "",
+          "tags": {}
+        },
+        {
+          "name": "registration_date",
+          "dtype": "String",
+          "description": "User registration date",
+          "tags": {}
+        },
+        {
+          "name": "age",
+          "dtype": "Int64",
+          "description": "User age in years",
+          "tags": {}
+        }
       ],
       "ttl": "365 days, 0:00:00",
-      "source": "user_demographic_source",
-      "source_path": "data/transformed/user_demographic_features.csv"
+      "source": {
+        "name": "user_demographic_source",
+        "type": "FileSource"
+      },
+      "tags": {},
+      "owner": "",
+      "created_timestamp": "2025-07-14T21:43:46.749357",
+      "last_updated_timestamp": "2025-07-14T22:03:21.646149",
+      "datahub": {
+        "urn": "urn:li:dataset:(urn:li:dataPlatform:feast,user_demographic_features,PROD)",
+        "platform": "feast",
+        "properties": {
+          "feature_count": 6,
+          "entity_count": 1,
+          "ttl_days": 365,
+          "update_frequency": "daily",
+          "business_use_cases": [
+            "User segmentation",
+            "personalized recommendations",
+            "marketing campaigns"
+          ],
+          "code_logic_url": "https://github.com/your-username/fs_poc_2/blob/main/src/feature_generation/feature_engineering.py#L13"
+        }
+      }
     },
     {
       "name": "user_behavior_features",
@@ -41,17 +152,69 @@
       "entities": [
         "user_id"
       ],
-      "features": [
-        "user_id",
-        "total_sessions",
-        "favorite_category",
-        "engagement_score",
-        "avg_session_duration",
-        "last_login_days"
+      "schema": [
+        {
+          "name": "favorite_category",
+          "dtype": "String",
+          "description": "Most frequently viewed category",
+          "tags": {}
+        },
+        {
+          "name": "last_login_days",
+          "dtype": "Int64",
+          "description": "Days since last login",
+          "tags": {}
+        },
+        {
+          "name": "avg_session_duration",
+          "dtype": "Float32",
+          "description": "Average session duration in minutes",
+          "tags": {}
+        },
+        {
+          "name": "user_id",
+          "dtype": "Int64",
+          "description": "",
+          "tags": {}
+        },
+        {
+          "name": "engagement_score",
+          "dtype": "Float32",
+          "description": "User engagement score (0-100)",
+          "tags": {}
+        },
+        {
+          "name": "total_sessions",
+          "dtype": "Int64",
+          "description": "Total number of sessions in last 30 days",
+          "tags": {}
+        }
       ],
       "ttl": "90 days, 0:00:00",
-      "source": "user_behavior_source",
-      "source_path": "data/transformed/user_behavior_features.csv"
+      "source": {
+        "name": "user_behavior_source",
+        "type": "FileSource"
+      },
+      "tags": {},
+      "owner": "",
+      "created_timestamp": "2025-07-14T21:43:46.749670",
+      "last_updated_timestamp": "2025-07-14T22:03:21.647607",
+      "datahub": {
+        "urn": "urn:li:dataset:(urn:li:dataPlatform:feast,user_behavior_features,PROD)",
+        "platform": "feast",
+        "properties": {
+          "feature_count": 6,
+          "entity_count": 1,
+          "ttl_days": 90,
+          "update_frequency": "daily",
+          "business_use_cases": [
+            "Churn prediction",
+            "engagement optimization",
+            "user experience improvements"
+          ],
+          "code_logic_url": "https://github.com/your-username/fs_poc_2/blob/main/src/feature_generation/feature_engineering.py#L67"
+        }
+      }
     },
     {
       "name": "transaction_features",
@@ -59,17 +222,69 @@
       "entities": [
         "user_id"
       ],
-      "features": [
-        "user_id",
-        "favorite_payment_method",
-        "total_spent",
-        "last_purchase_days",
-        "total_orders",
-        "avg_order_value"
+      "schema": [
+        {
+          "name": "favorite_payment_method",
+          "dtype": "String",
+          "description": "Most used payment method",
+          "tags": {}
+        },
+        {
+          "name": "avg_order_value",
+          "dtype": "Float32",
+          "description": "Average order value",
+          "tags": {}
+        },
+        {
+          "name": "last_purchase_days",
+          "dtype": "Int64",
+          "description": "Days since last purchase",
+          "tags": {}
+        },
+        {
+          "name": "user_id",
+          "dtype": "Int64",
+          "description": "",
+          "tags": {}
+        },
+        {
+          "name": "total_orders",
+          "dtype": "Int64",
+          "description": "Total number of orders",
+          "tags": {}
+        },
+        {
+          "name": "total_spent",
+          "dtype": "Float32",
+          "description": "Total amount spent by user",
+          "tags": {}
+        }
       ],
       "ttl": "365 days, 0:00:00",
-      "source": "transaction_source",
-      "source_path": "data/transformed/transaction_features.csv"
+      "source": {
+        "name": "transaction_source",
+        "type": "FileSource"
+      },
+      "tags": {},
+      "owner": "",
+      "created_timestamp": "2025-07-14T21:43:46.749862",
+      "last_updated_timestamp": "2025-07-14T22:03:21.648374",
+      "datahub": {
+        "urn": "urn:li:dataset:(urn:li:dataPlatform:feast,transaction_features,PROD)",
+        "platform": "feast",
+        "properties": {
+          "feature_count": 6,
+          "entity_count": 1,
+          "ttl_days": 365,
+          "update_frequency": "daily",
+          "business_use_cases": [
+            "Customer lifetime value",
+            "purchase prediction",
+            "fraud detection"
+          ],
+          "code_logic_url": "https://github.com/your-username/fs_poc_2/blob/main/src/feature_generation/feature_engineering.py#L121"
+        }
+      }
     },
     {
       "name": "product_features",
@@ -77,34 +292,125 @@
       "entities": [
         "product_id"
       ],
-      "features": [
-        "inventory_level",
-        "price",
-        "category",
-        "avg_rating",
-        "product_id",
-        "total_reviews"
+      "schema": [
+        {
+          "name": "product_id",
+          "dtype": "Int64",
+          "description": "",
+          "tags": {}
+        },
+        {
+          "name": "avg_rating",
+          "dtype": "Float32",
+          "description": "Average product rating",
+          "tags": {}
+        },
+        {
+          "name": "inventory_level",
+          "dtype": "Int64",
+          "description": "Current inventory level",
+          "tags": {}
+        },
+        {
+          "name": "category",
+          "dtype": "String",
+          "description": "Product category",
+          "tags": {}
+        },
+        {
+          "name": "total_reviews",
+          "dtype": "Int64",
+          "description": "Total number of reviews",
+          "tags": {}
+        },
+        {
+          "name": "price",
+          "dtype": "Float32",
+          "description": "Product price",
+          "tags": {}
+        }
       ],
       "ttl": "180 days, 0:00:00",
-      "source": "product_source",
-      "source_path": "data/transformed/product_features.csv"
+      "source": {
+        "name": "product_source",
+        "type": "FileSource"
+      },
+      "tags": {},
+      "owner": "",
+      "created_timestamp": "2025-07-14T21:43:46.750014",
+      "last_updated_timestamp": "2025-07-14T22:03:21.649070",
+      "datahub": {
+        "urn": "urn:li:dataset:(urn:li:dataPlatform:feast,product_features,PROD)",
+        "platform": "feast",
+        "properties": {
+          "feature_count": 6,
+          "entity_count": 1,
+          "ttl_days": 180,
+          "update_frequency": "daily",
+          "business_use_cases": [
+            "Product recommendations",
+            "inventory optimization",
+            "pricing strategies"
+          ],
+          "code_logic_url": "https://github.com/your-username/fs_poc_2/blob/main/src/feature_generation/feature_engineering.py#L175"
+        }
+      }
     }
   ],
   "feature_services": [
     {
       "name": "user_feature_service",
       "description": "\n        Comprehensive user feature service combining demographic, behavior, and transaction features.\n        \n        **Use Cases:** User profiling, personalized recommendations, customer segmentation\n        **Model Applications:** Churn prediction, CLV modeling, recommendation systems\n        **Documentation:** https://github.com/your-org/feature-pipeline/wiki/user-features\n        **Feature Count:** 3 feature views with 15 total features\n        ",
-      "feature_views": []
+      "feature_views": [],
+      "tags": {},
+      "owner": "",
+      "created_timestamp": "2025-07-14T21:43:46.750388",
+      "last_updated_timestamp": "2025-07-14T23:01:34.732673",
+      "datahub": {
+        "urn": "urn:li:dataset:(urn:li:dataPlatform:feast,user_feature_service,PROD)",
+        "platform": "feast",
+        "properties": {
+          "feature_view_count": 0,
+          "total_features": 0,
+          "service_type": "FeatureService"
+        }
+      }
     },
     {
       "name": "product_feature_service",
       "description": "\n        Product feature service for product-related ML models.\n        \n        **Use Cases:** Product recommendations, inventory optimization, pricing strategies\n        **Model Applications:** Product ranking, demand forecasting, price optimization\n        **Documentation:** https://github.com/your-org/feature-pipeline/wiki/product-features\n        **Feature Count:** 1 feature view with 5 total features\n        ",
-      "feature_views": []
+      "feature_views": [],
+      "tags": {},
+      "owner": "",
+      "created_timestamp": "2025-07-14T21:43:46.750671",
+      "last_updated_timestamp": "2025-07-14T23:01:34.732980",
+      "datahub": {
+        "urn": "urn:li:dataset:(urn:li:dataPlatform:feast,product_feature_service,PROD)",
+        "platform": "feast",
+        "properties": {
+          "feature_view_count": 0,
+          "total_features": 0,
+          "service_type": "FeatureService"
+        }
+      }
     },
     {
       "name": "behavior_feature_service",
       "description": "\n        User behavior and transaction feature service for engagement and purchase prediction.\n        \n        **Use Cases:** Engagement prediction, purchase behavior analysis, churn prevention\n        **Model Applications:** Engagement scoring, purchase prediction, churn modeling\n        **Documentation:** https://github.com/your-org/feature-pipeline/wiki/behavior-features\n        **Feature Count:** 2 feature views with 10 total features\n        ",
-      "feature_views": []
+      "feature_views": [],
+      "tags": {},
+      "owner": "",
+      "created_timestamp": "2025-07-14T21:43:46.750756",
+      "last_updated_timestamp": "2025-07-14T23:01:34.733105",
+      "datahub": {
+        "urn": "urn:li:dataset:(urn:li:dataPlatform:feast,behavior_feature_service,PROD)",
+        "platform": "feast",
+        "properties": {
+          "feature_view_count": 0,
+          "total_features": 0,
+          "service_type": "FeatureService"
+        }
+      }
     }
   ]
 }

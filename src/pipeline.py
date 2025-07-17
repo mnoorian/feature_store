@@ -93,7 +93,7 @@ def generate_all_features(
 def register_features_in_feast(
     repo_path: str = ".",
     use_s3: bool = False,
-    export_metadata: bool = True
+    should_export_metadata: bool = True
 ) -> bool:
     """
     Register features in Feast feature store
@@ -122,10 +122,19 @@ def register_features_in_feast(
         return False
     
     # Step 3: Export metadata (optional)
-    if export_metadata:
+    if should_export_metadata:
         print("\n📤 Step 3: Exporting metadata for DataHub...")
         if not export_metadata(repo_path, "data/feature_metadata.json"):
             print("⚠️ Metadata export failed, but continuing...")
+    
+    # Step 4: Run DataHub ingestion (optional)
+    print("\n🔗 Step 4: Running DataHub ingestion...")
+    try:
+        from datahub_integration import run_datahub_ingestion
+        if not run_datahub_ingestion(verbose=False):
+            print("⚠️ DataHub ingestion failed, but continuing...")
+    except ImportError:
+        print("⚠️ DataHub integration not available, skipping...")
     
     print("\n✅ Feature registration completed successfully!")
     print("=" * 60)
@@ -176,7 +185,7 @@ def run_complete_pipeline(
     if not register_features_in_feast(
         repo_path=repo_path,
         use_s3=use_s3,
-        export_metadata=export_metadata
+        should_export_metadata=export_metadata
     ):
         print("❌ Feature registration phase failed!")
         return False
@@ -225,7 +234,7 @@ def main():
         return register_features_in_feast(
             repo_path=args.repo_path,
             use_s3=args.use_s3,
-            export_metadata=not args.skip_metadata
+            should_export_metadata=not args.skip_metadata
         )
     
     else:

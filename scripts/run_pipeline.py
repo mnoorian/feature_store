@@ -172,8 +172,8 @@ Examples:
         elif args.export_metadata_only:
             # Only export metadata
             print("📤 Running metadata export only...")
-            from feature_store.registry import export_feast_metadata
-            success = export_feast_metadata()
+            from feature_store.registry import export_metadata
+            success = export_metadata()
             
         else:
             # Run complete pipeline
