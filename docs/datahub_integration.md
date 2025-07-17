@@ -231,3 +231,82 @@ For issues with:
 - `configs/datahub_config.yaml`: Configuration file for DataHub pipeline
 - `src/datahub_integration/ingestion.py`: Python module for running DataHub ingestion
 - `docs/datahub_integration.md`: This documentation file 
+
+---
+
+## 1. **User Groups (Access Control & RBAC)**
+
+**DataHub supports user groups and role-based access control (RBAC)**, but you need to enable authentication and configure groups/roles.
+
+### Steps:
+- **Enable Auth**:  
+  In your `docker-compose.yml`, set `METADATA_SERVICE_AUTH_ENABLED=true` for the `datahub-gms` service.
+- **Restart DataHub** after making changes.
+- **Configure Users/Groups/Roles**:  
+  Use the DataHub UI (Admin > Access Management) or the DataHub CLI to create users, groups, and assign roles.
+
+#### Example (docker-compose.yml):
+```yaml
+  datahub-gms:
+    environment:
+      # ... existing config ...
+      - METADATA_SERVICE_AUTH_ENABLED=true
+```
+
+---
+
+## 2. **Ingestions (Managed Ingestion UI & Scheduling)**
+
+**DataHub provides a UI for managing and scheduling ingestions.**
+
+### Steps:
+- **Enable Managed Ingestion**:  
+  In your `docker-compose.yml`, for the `datahub-frontend-react` service, ensure:
+  ```yaml
+      - FEATURE_FLAGS__MANAGED_INGESTION=true
+  ```
+  (You already have this set correctly.)
+
+- **Access the Ingestion UI**:  
+  Go to `http://localhost:9002/ingestion` in your browser.  
+  Here, you can add, schedule, and monitor ingestion sources (including Feast, databases, etc.).
+
+---
+
+## 3. **Other Features**
+
+- **Lineage, Tags, Glossary, Ownership, etc.**:  
+  These are available in the DataHub UI. You can add tags, glossary terms, and ownership to datasets/features via the UI or API.
+- **Custom Metadata**:  
+  You can extend your ingestion YAML (`configs/datahub_config.yaml`) to include more metadata, tags, or custom transformers.
+
+---
+
+## 4. **Best Practices**
+
+- **Version Control**: Keep your DataHub config files in git.
+- **Regular Ingestion**: Schedule ingestion jobs to keep metadata fresh.
+- **Document Features**: Use DataHub’s UI to add descriptions, owners, and tags.
+- **Access Control**: Use groups/roles to restrict sensitive data.
+
+---
+
+## 5. **Next Steps**
+
+1. **Edit your `docker-compose.yml`** to enable authentication and any other features you want.
+2. **Restart DataHub**:  
+   ```sh
+   docker compose down -v
+   docker compose up -d
+   ```
+3. **Configure users/groups/roles** in the DataHub UI.
+4. **Use the Ingestion UI** to add and schedule new ingestion sources.
+
+---
+
+Would you like me to:
+- Edit your `docker-compose.yml` to enable authentication and user groups?
+- Show you how to add a new ingestion source via the UI or config?
+- Provide a sample user/group/role setup?
+
+Let me know which features you want to focus on first! 
